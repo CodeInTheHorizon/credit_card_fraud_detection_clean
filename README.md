@@ -62,3 +62,28 @@ fraud detection systems.
 Despite tuning, Local Outlier Factor failed to achieve an acceptable balance between precision
 and recall for fraud detection. These findings highlight the limitations of density-based
 methods for highly imbalanced, high-dimensional financial transaction data.
+
+### Threshold Recommendation
+
+Based on Precision–Recall curve analysis, the final fraud score threshold was
+selected by maximizing the F1-score. This operating point provides a balanced
+trade-off between fraud detection recall and false positive rates.
+
+We recommend using this threshold for deployment, as it captures a significant
+portion of fraudulent transactions while maintaining a manageable level of
+false alarms in real-world scenarios.
+
+## Final Recommendation
+
+After evaluating multiple unsupervised anomaly detection techniques, Isolation
+Forest was selected as the final model for fraud detection. It demonstrated
+strong scalability, faster execution time, and superior fraud recall compared
+to Local Outlier Factor.
+
+Local Outlier Factor was found to be computationally expensive and ineffective
+at identifying fraudulent transactions in highly imbalanced, high-dimensional
+data. Therefore, Isolation Forest is recommended for real-time fraud detection
+applications.
+
+PCA-based visualizations were used to qualitatively assess the separation between
+normal and anomalous transactions, providing visual validation of the model behavior.
