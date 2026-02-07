@@ -87,3 +87,13 @@ applications.
 
 PCA-based visualizations were used to qualitatively assess the separation between
 normal and anomalous transactions, providing visual validation of the model behavior.
+
+
+### Streamlit Application
+The project includes an interactive Streamlit web application that allows users to:
+- Upload raw transaction data (creditcard.csv)
+- Adjust fraud risk sensitivity using a threshold slider
+- Run real-time fraud detection
+- Visualize risk distribution and flagged transactions
+
+The application mirrors the model’s training pipeline during inference, ensuring strict feature consistency and reliable anomaly scoring.
