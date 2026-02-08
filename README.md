@@ -1,100 +1,479 @@
 # Real-Time Anomaly Detection in Credit Card Transactions
 
-## Problem Statement
+## 📌 Problem Statement
 
-Financial fraud detection is a critical challenge due to the extreme imbalance between legitimate and fraudulent transactions. Fraudulent transactions represent a very small fraction of overall data, making traditional classification approaches unreliable.
+Credit card fraud detection is a critical challenge due to **extreme class imbalance**.
+Fraudulent transactions represent less than **0.2%** of total transactions, making
+traditional supervised classification approaches unreliable and misleading when
+evaluated using accuracy.
 
-This project focuses on detecting anomalous credit card transactions using unsupervised machine learning techniques.
+This project focuses on detecting anomalous credit card transactions using
+**unsupervised machine learning techniques**, where the model learns normal behavior
+and flags deviations as potential fraud.
 
-## Dataset
+---
 
-- The dataset consists of anonymized credit card transactions.
-- Features `V1` to `V28` are PCA-transformed components to preserve user privacy.
-- The `Amount` feature represents transaction value and contains extreme outliers.
-- The target variable `Class` indicates fraud (1) or normal transaction (0).
-- The dataset is highly imbalanced, with fraud cases accounting for less than 0.2% of total transactions.
+## 📊 Dataset Overview
 
-## Project Status
+- Public credit card transaction dataset
+- Features `V1`–`V28` are **PCA-transformed** to preserve customer privacy
+- `Amount` feature represents transaction value and contains extreme outliers
+- Target column `Class`:
+  - `0` → Normal transaction
+  - `1` → Fraudulent transaction
+- Fraud cases account for **< 0.2%** of the dataset
 
-- [x] Exploratory Data Analysis (EDA)
-- [x] Class imbalance analysis
-- [x] Distribution analysis of transaction Amount
-- [x] Robust scaling strategy identified
-- [x] Model training
-- [x] Model evaluation
-- [x] UI development
-- [ ] Deployment
+---
 
-> Note: Exploratory analysis was initially performed in a Jupyter environment and finalized within the project repository for reproducibility.
+## 🧠 Why Unsupervised Learning?
 
-### Week 2: Isolation Forest Implementation
+In real-world fraud detection systems:
 
-The objective of this phase is to detect anomalous transactions using a tree-based unsupervised learning approach.
+- Fraud labels are **rare, delayed, or incomplete**
+- Fraud patterns evolve continuously
+- Models must operate in **near real-time**
 
-Isolation Forest was trained primarily on normal transactions to establish a baseline of legitimate behavior.
-Multiple configurations of the model were evaluated by varying the number of estimators and the contamination parameter.
+Unsupervised models are well-suited because they:
 
-Model performance was assessed using confusion matrices and class-wise precision and recall, with special emphasis on recall for the fraud class.
-These experiments form the basis for selecting an optimal contamination threshold that balances fraud detection capability with an acceptable false positive rate.
+- Learn patterns of **normal transactions**
+- Flag statistically rare and unusual behavior
+- Do not rely on labeled fraud data during detection
 
-“Multiple contamination thresholds were evaluated to balance recall and false positives.”
+---
 
-“Phase 1 (EDA & Scaling) and Phase 2 – Week 2 (Isolation Forest) have been implemented within the same technical notebook for continuity and reproducibility.”
+## 🗂️ Project Structure
 
-## Week 3: Local Outlier Factor (LOF)
+# Real-Time Anomaly Detection in Credit Card Transactions
 
-In this phase, a density-based anomaly detection approach using Local Outlier Factor (LOF)
-was implemented and evaluated.
+## 📌 Problem Statement
 
-Due to the quadratic computational complexity of LOF, the algorithm was applied on a
-representative subset of transactions rather than the full dataset. This reflects
-real-world deployment constraints, where LOF is unsuitable for large-scale, real-time
-fraud detection systems.
+Credit card fraud detection is a critical challenge due to **extreme class imbalance**.
+Fraudulent transactions represent less than **0.2%** of total transactions, making
+traditional supervised classification approaches unreliable and misleading when
+evaluated using accuracy.
 
-### Key Observations
+This project focuses on detecting anomalous credit card transactions using
+**unsupervised machine learning techniques**, where the model learns normal behavior
+and flags deviations as potential fraud.
 
-- LOF demonstrated high accuracy on normal transactions but very low recall on fraudulent cases.
-- Even after hyperparameter tuning (`n_neighbors`, `contamination`), the maximum fraud recall
-  remained below 5%.
-- Execution time analysis showed that LOF does not scale efficiently compared to Isolation Forest.
+---
 
-### Conclusion
+## 📊 Dataset Overview
 
-Despite tuning, Local Outlier Factor failed to achieve an acceptable balance between precision
-and recall for fraud detection. These findings highlight the limitations of density-based
-methods for highly imbalanced, high-dimensional financial transaction data.
+- Public credit card transaction dataset
+- Features `V1`–`V28` are **PCA-transformed** to preserve customer privacy
+- `Amount` feature represents transaction value and contains extreme outliers
+- Target column `Class`:
+  - `0` → Normal transaction
+  - `1` → Fraudulent transaction
+- Fraud cases account for **< 0.2%** of the dataset
 
-### Threshold Recommendation
+---
 
-Based on Precision–Recall curve analysis, the final fraud score threshold was
-selected by maximizing the F1-score. This operating point provides a balanced
-trade-off between fraud detection recall and false positive rates.
+## 🧠 Why Unsupervised Learning?
 
-We recommend using this threshold for deployment, as it captures a significant
-portion of fraudulent transactions while maintaining a manageable level of
-false alarms in real-world scenarios.
+In real-world fraud detection systems:
 
-## Final Recommendation
+- Fraud labels are **rare, delayed, or incomplete**
+- Fraud patterns evolve continuously
+- Models must operate in **near real-time**
 
-After evaluating multiple unsupervised anomaly detection techniques, Isolation
-Forest was selected as the final model for fraud detection. It demonstrated
-strong scalability, faster execution time, and superior fraud recall compared
-to Local Outlier Factor.
+Unsupervised models are well-suited because they:
 
-Local Outlier Factor was found to be computationally expensive and ineffective
-at identifying fraudulent transactions in highly imbalanced, high-dimensional
-data. Therefore, Isolation Forest is recommended for real-time fraud detection
-applications.
+- Learn patterns of **normal transactions**
+- Flag statistically rare and unusual behavior
+- Do not rely on labeled fraud data during detection
 
-PCA-based visualizations were used to qualitatively assess the separation between
-normal and anomalous transactions, providing visual validation of the model behavior.
+---
+
+## 🗂️ Project Structure
+
+credit_card_fraud_detection/
+│
+├── notebooks/ # EDA, experiments, model evaluation
+├── src/ # Production-ready ML logic
+│ ├── model.py # Model loading utilities
+│ └── scoring.py # Feature prep, scoring, risk assignment
+├── models/ # Saved models & preprocessing artifacts
+├── ui/ # Streamlit dashboard
+├── data/ # Sample / raw datasets
+├── requirements.txt
+└── README.md
+
+---
+
+## 🚀 Phase-wise Implementation
+
+### 🔹 Phase 1: Exploratory Data Analysis & Scaling
+
+- Class imbalance analysis
+- Distribution analysis of transaction `Amount`
+- Identified heavy-tailed outliers
+- Applied **RobustScaler** to stabilize feature scaling
+- PCA feature inspection for variance behavior
+
+---
+
+### 🔹 Phase 2: Unsupervised Model Building
+
+#### Week 2: Isolation Forest
+
+- Trained primarily on **normal transactions**
+- Hyperparameters explored:
+  - `n_estimators`
+  - `contamination`
+- Evaluation focused on:
+  - Precision
+  - Recall
+  - Confusion matrices (not accuracy)
+
+**Key Result:**  
+Isolation Forest achieved the best balance between fraud recall and false positives
+while scaling efficiently to large datasets.
+
+---
+
+#### Week 3: Local Outlier Factor (LOF)
+
+- Density-based anomaly detection algorithm
+- Applied to a **subset of data** due to computational complexity
+
+**Key Observations:**
+
+- High accuracy on normal transactions
+- Fraud recall consistently **below 5%**
+- Poor scalability for large, high-dimensional datasets
+
+**Conclusion:**  
+LOF is unsuitable for real-time fraud detection at scale.
+
+---
+
+## 📈 Phase 3: Threshold Tuning & Evaluation
+
+- Accuracy intentionally avoided
+- Evaluation based on:
+  - Precision
+  - Recall
+  - F1-score
+- Precision–Recall curves used to select operating point
+
+### ✅ Threshold Recommendation
+
+The final fraud score threshold was selected by **maximizing the F1-score**,
+achieving a balanced trade-off between:
+
+- Capturing fraudulent transactions
+- Maintaining a manageable false positive rate
+
+This threshold is recommended for deployment.
+
+---
+
+## 🏆 Final Model Selection
+
+| Model            | Scalability | Fraud Recall | Deployment Suitability |
+| ---------------- | ----------- | ------------ | ---------------------- |
+| Isolation Forest | High        | Strong       | ✅ Recommended         |
+| LOF              | Low         | Very Weak    | ❌ Not Suitable        |
+
+Isolation Forest was selected as the final model.
+
+---
+
+## 🖥️ Streamlit Dashboard
+
+An interactive Streamlit application was built to demonstrate real-time inference.
+
+### Features:
+
+- Upload raw transaction CSV files
+- Dynamic fraud threshold tuning
+- Real-time anomaly scoring
+- Risk categorization:
+  - Low Risk
+  - Medium Risk
+  - High Risk
+- Interactive tables and visualizations
+
+The UI mirrors the **exact training pipeline** during inference, ensuring
+feature consistency and reliable fraud scoring.
+
+---
+
+## 🧠 Key Insights
+
+- Accuracy is misleading for fraud detection
+- Recall–precision trade-off is a **business decision**
+- Unsupervised models are more realistic for fraud systems
+- Isolation Forest outperforms density-based methods
+- Threshold tuning is as important as model selection
+
+---
+
+## 🛠️ Tech Stack
+
+- Python
+- Pandas, NumPy
+- Scikit-learn
+- Matplotlib
+- Streamlit
+- Git & GitHub
+
+---
+
+## ▶️ How to Run
+
+````bash
+pip install -r requirements.txt
+streamlit run ui/app.py
 
 
-### Streamlit Application
-The project includes an interactive Streamlit web application that allows users to:
-- Upload raw transaction data (creditcard.csv)
-- Adjust fraud risk sensitivity using a threshold slider
-- Run real-time fraud detection
-- Visualize risk distribution and flagged transactions
+---
 
-The application mirrors the model’s training pipeline during inference, ensuring strict feature consistency and reliable anomaly scoring.
+## 🚀 Phase-wise Implementation
+
+### 🔹 Phase 1: Exploratory Data Analysis & Scaling
+- Class imbalance analysis
+- Distribution analysis of transaction `Amount`
+- Identified heavy-tailed outliers
+- Applied **RobustScaler** to stabilize feature scaling
+- PCA feature inspection for variance behavior
+
+---
+
+### 🔹 Phase 2: Unsupervised Model Building
+
+#### Week 2: Isolation Forest
+- Trained primarily on **normal transactions**
+- Hyperparameters explored:
+  - `n_estimators`
+  - `contamination`
+- Evaluation focused on:
+  - Precision
+  - Recall
+  - Confusion matrices (not accuracy)
+
+**Key Result:**
+Isolation Forest achieved the best balance between fraud recall and false positives
+while scaling efficiently to large datasets.
+
+---
+
+#### Week 3: Local Outlier Factor (LOF)
+
+- Density-based anomaly detection algorithm
+- Applied to a **subset of data** due to computational complexity
+
+**Key Observations:**
+- High accuracy on normal transactions
+- Fraud recall consistently **below 5%**
+- Poor scalability for large, high-dimensional datasets
+
+**Conclusion:**
+LOF is unsuitable for real-time fraud detection at scale.
+
+---
+
+## 📈 Phase 3: Threshold Tuning & Evaluation
+
+- Accuracy intentionally avoided
+- Evaluation based on:
+  - Precision
+  - Recall
+  - F1-score
+- Precision–Recall curves used to select operating point
+
+### ✅ Threshold Recommendation
+
+The final fraud score threshold was selected by **maximizing the F1-score**,
+achieving a balanced trade-off between:
+- Capturing fraudulent transactions
+- Maintaining a manageable false positive rate
+
+This threshold is recommended for deployment.
+
+---
+
+## 🏆 Final Model Selection
+
+| Model              | Scalability | Fraud Recall | Deployment Suitability |
+|-------------------|------------|--------------|------------------------|
+| Isolation Forest  | High       | Strong       | ✅ Recommended          |
+| LOF               | Low        | Very Weak    | ❌ Not Suitable         |
+
+Isolation Forest was selected as the final model.
+
+---
+
+## 🖥️ Streamlit Dashboard
+
+An interactive Streamlit application was built to demonstrate real-time inference.
+
+### Features:
+- Upload raw transaction CSV files
+- Dynamic fraud threshold tuning
+- Real-time anomaly scoring
+- Risk categorization:
+  - Low Risk
+  - Medium Risk
+  - High Risk
+- Interactive tables and visualizations
+
+The UI mirrors the **exact training pipeline** during inference, ensuring
+feature consistency and reliable fraud scoring.
+
+---
+
+## 🧠 Key Insights
+
+- Accuracy is misleading for fraud detection
+- Recall–precision trade-off is a **business decision**
+- Unsupervised models are more realistic for fraud systems
+- Isolation Forest outperforms density-based methods
+- Threshold tuning is as important as model selection
+
+---
+
+## 🛠️ Tech Stack
+
+- Python
+- Pandas, NumPy
+- Scikit-learn
+- Matplotlib
+- Streamlit
+- Git & GitHub
+
+---
+
+## ▶️ How to Run
+
+```bash
+pip install -r requirements.txt
+streamlit run ui/app.py
+
+
+---
+
+## 🚀 Phase-wise Implementation
+
+### 🔹 Phase 1: Exploratory Data Analysis & Scaling
+- Class imbalance analysis
+- Distribution analysis of transaction `Amount`
+- Identified heavy-tailed outliers
+- Applied **RobustScaler** to stabilize feature scaling
+- PCA feature inspection for variance behavior
+
+---
+
+### 🔹 Phase 2: Unsupervised Model Building
+
+#### Week 2: Isolation Forest
+- Trained primarily on **normal transactions**
+- Hyperparameters explored:
+  - `n_estimators`
+  - `contamination`
+- Evaluation focused on:
+  - Precision
+  - Recall
+  - Confusion matrices (not accuracy)
+
+**Key Result:**
+Isolation Forest achieved the best balance between fraud recall and false positives
+while scaling efficiently to large datasets.
+
+---
+
+#### Week 3: Local Outlier Factor (LOF)
+
+- Density-based anomaly detection algorithm
+- Applied to a **subset of data** due to computational complexity
+
+**Key Observations:**
+- High accuracy on normal transactions
+- Fraud recall consistently **below 5%**
+- Poor scalability for large, high-dimensional datasets
+
+**Conclusion:**
+LOF is unsuitable for real-time fraud detection at scale.
+
+---
+
+## 📈 Phase 3: Threshold Tuning & Evaluation
+
+- Accuracy intentionally avoided
+- Evaluation based on:
+  - Precision
+  - Recall
+  - F1-score
+- Precision–Recall curves used to select operating point
+
+### ✅ Threshold Recommendation
+
+The final fraud score threshold was selected by **maximizing the F1-score**,
+achieving a balanced trade-off between:
+- Capturing fraudulent transactions
+- Maintaining a manageable false positive rate
+
+This threshold is recommended for deployment.
+
+---
+
+## 🏆 Final Model Selection
+
+| Model              | Scalability | Fraud Recall | Deployment Suitability |
+|-------------------|------------|--------------|------------------------|
+| Isolation Forest  | High       | Strong       | ✅ Recommended          |
+| LOF               | Low        | Very Weak    | ❌ Not Suitable         |
+
+Isolation Forest was selected as the final model.
+
+---
+
+## 🖥️ Streamlit Dashboard
+
+An interactive Streamlit application was built to demonstrate real-time inference.
+
+### Features:
+- Upload raw transaction CSV files
+- Dynamic fraud threshold tuning
+- Real-time anomaly scoring
+- Risk categorization:
+  - Low Risk
+  - Medium Risk
+  - High Risk
+- Interactive tables and visualizations
+
+The UI mirrors the **exact training pipeline** during inference, ensuring
+feature consistency and reliable fraud scoring.
+
+---
+
+## 🧠 Key Insights
+
+- Accuracy is misleading for fraud detection
+- Recall–precision trade-off is a **business decision**
+- Unsupervised models are more realistic for fraud systems
+- Isolation Forest outperforms density-based methods
+- Threshold tuning is as important as model selection
+
+---
+
+## 🛠️ Tech Stack
+
+- Python
+- Pandas, NumPy
+- Scikit-learn
+- Matplotlib
+- Streamlit
+- Git & GitHub
+
+---
+
+## ▶️ How to Run
+
+```bash
+pip install -r requirements.txt
+streamlit run ui/app.py
+
+````
