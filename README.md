@@ -20,8 +20,9 @@ This project focuses on detecting anomalous credit card transactions using unsup
 - [x] Class imbalance analysis
 - [x] Distribution analysis of transaction Amount
 - [x] Robust scaling strategy identified
-- [ ] Model training
-- [ ] Model evaluation
+- [x] Model training
+- [x] Model evaluation
+- [x] UI development
 - [ ] Deployment
 
 > Note: Exploratory analysis was initially performed in a Jupyter environment and finalized within the project repository for reproducibility.
