@@ -4,4 +4,5 @@ scikit-learn
 matplotlib
 seaborn
 joblib
-streamlit
+streamlit==1.32.2
+altair==5.3.0
