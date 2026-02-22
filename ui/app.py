@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from src.model import load_model
 from src.scoring import compute_anomaly_score, assign_risk, prepare_features
